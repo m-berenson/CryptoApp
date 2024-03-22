@@ -1,6 +1,13 @@
 import React, { useMemo, useState } from 'react'
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { colors } from '@/theme/colors'
+import Text from '@/components/atoms/Text/Text'
+import Header from '@/components/molecules/Header/Header'
+import SearchBar from '@/components/atoms/SearchBar/SearchBar'
+import Pill from '@/components/molecules/Pill/Pill'
+import Spacer from '@/components/atoms/Spacer/Spacer'
+import Cell from '@/components/molecules/CryptoCell/Cell'
 
 type CMCCryptoCurrency = {
   /** The unique CoinMarketCap ID for this cryptocurrency. */
@@ -30,37 +37,44 @@ type FavoriteItemKey = `${CMCCryptoCurrency['symbol']}:${CMCCryptoCurrency['id']
 
 const FAVORITE_ITEMS: FavoriteItemKey[] = ['BTC:1']
 
+const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string }) =>
+  item.name.toLowerCase().includes(search.toLowerCase()) ||
+  item.symbol.toLowerCase().includes(search.toLowerCase())
+
 const Home = () => {
   const renderItem = ({ item }: { item: CMCCryptoCurrency }) => {
-    return (
-      <View style={styles.container}>
-        <View style={{ flex: 1 }}>
-          <Text>{item.name}</Text>
-          <Text>{item.symbol}</Text>
-        </View>
-
-        <Text>{item.id}</Text>
-      </View>
-    )
+    return <Cell name={item.name} symbol={item.symbol} price={item.id} isFavorite={false} />
   }
 
   const [isFavsSelected, setIsFavSelected] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
 
+  // TODO: Improve this logic and add debounce
   const data = useMemo(
     () =>
       !isFavsSelected
-        ? MOCKED_DATA
-        : MOCKED_DATA.filter(item => FAVORITE_ITEMS.includes(`${item.symbol}:${item.id}`)),
-    [isFavsSelected]
+        ? !!searchValue
+          ? MOCKED_DATA.filter(item => searchMatch({ item, search: searchValue }))
+          : MOCKED_DATA
+        : MOCKED_DATA.filter(
+            item =>
+              FAVORITE_ITEMS.includes(`${item.symbol}:${item.id}`) &&
+              searchMatch({ item, search: searchValue })
+          ),
+    [isFavsSelected, searchValue]
   )
 
   return (
-    <SafeAreaView style={{ paddingHorizontal: 16, flex: 1 }}>
-      <Text style={{ fontSize: 30 }}>
-        👋 ¡Hola, <Text style={{ fontSize: 30, fontWeight: '500' }}>User</Text>!
-      </Text>
+    <SafeAreaView
+      style={{ backgroundColor: colors.backgroundPrimary, paddingHorizontal: 16, flex: 1 }}
+    >
+      <Header userName='John Doe' />
 
-      <Spacer vertical={20} />
+      <Spacer vertical='large' />
+
+      <SearchBar placeholder='Search' onSearch={setSearchValue} value={searchValue} />
+
+      <Spacer vertical='large' />
 
       <Pill
         isSelected={isFavsSelected}
@@ -68,7 +82,8 @@ const Home = () => {
         onPress={() => setIsFavSelected(prev => !prev)}
       />
 
-      <Spacer vertical={20} />
+      <Spacer vertical='medium' />
+
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -76,48 +91,12 @@ const Home = () => {
       />
 
       <Pressable style={{ alignItems: 'center' }}>
-        <Text style={{ color: 'blue', fontSize: 18 }}>Log out</Text>
+        <Text variant='button' color='accentColor'>
+          Log out
+        </Text>
       </Pressable>
     </SafeAreaView>
   )
 }
-
-const Pill = ({
-  isSelected,
-  title,
-  onPress,
-}: {
-  isSelected: boolean
-  title: string
-  onPress: () => void
-}) => {
-  return (
-    <Pressable
-      style={{
-        paddingVertical: 4,
-        paddingHorizontal: 8,
-        borderRadius: 16,
-        backgroundColor: isSelected ? 'green' : 'black',
-        alignSelf: 'flex-start',
-      }}
-      onPress={onPress}
-    >
-      <Text style={{ color: isSelected ? 'black' : 'white' }}>{title}</Text>
-    </Pressable>
-  )
-}
-
-const Spacer = ({ vertical, horizontal }: { vertical?: number; horizontal?: number }) => {
-  return <View style={{ height: vertical, width: horizontal }} />
-}
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 8,
-    flexDirection: 'row',
-    backgroundColor: 'lightblue',
-    borderRadius: 8,
-  },
-})
 
 export default Home
