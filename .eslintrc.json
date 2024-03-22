@@ -1,0 +1,27 @@
+{
+  "extends": ["@react-native-community"],
+  "overrides": [
+    {
+      "files": ["*.js", "*.ts", "*.tsx"],
+      "rules": {
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "@typescript-eslint/no-shadow": ["error"],
+        "@typescript-eslint/no-undef": "off",
+        "@typescript-eslint/no-unused-vars": "error",
+        "jsx-quotes": ["error", "prefer-single"],
+        "no-console": "error",
+        "no-else-return": ["error", { "allowElseIf": false }],
+        "react/jsx-curly-brace-presence": "warn",
+        "semi": ["error", "never"]
+      }
+    }
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "root": true,
+  "settings": {
+    "import/resolver": {
+      "typescript": true
+    }
+  }
+}
