@@ -15,6 +15,7 @@ const SearchBar = ({ placeholder, onSearch, value }: SearchBarProps) => {
         style={styles.input}
         value={value}
         placeholder={placeholder}
+        placeholderTextColor={colors.textSecondary}
         onChangeText={onSearch}
         selectionColor={colors.textPrimary}
       />
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: colors.textPrimary,
+    fontWeight: '500',
   },
 })
 

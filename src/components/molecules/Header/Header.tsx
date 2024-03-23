@@ -1,4 +1,6 @@
 import Text from '@/components/atoms/Text/Text'
+import { colors, shadows } from '@/theme'
+import { View } from 'react-native'
 
 type HeaderProps = {
   userName: string

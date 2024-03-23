@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '@/theme/colors'
 import Text from '@/components/atoms/Text/Text'
@@ -8,30 +8,8 @@ import SearchBar from '@/components/atoms/SearchBar/SearchBar'
 import Pill from '@/components/molecules/Pill/Pill'
 import Spacer from '@/components/atoms/Spacer/Spacer'
 import Cell from '@/components/molecules/CryptoCell/Cell'
-
-type CMCCryptoCurrency = {
-  /** The unique CoinMarketCap ID for this cryptocurrency. */
-  id: number
-
-  /** The name of this cryptocurrency. */
-  name: string
-
-  /** The ticker symbol for this cryptocurrency. */
-  symbol: string
-}
-
-const MOCKED_DATA: CMCCryptoCurrency[] = [
-  {
-    id: 1,
-    name: 'Bitcoin',
-    symbol: 'BTC',
-  },
-  {
-    id: 2,
-    name: 'Ethereum',
-    symbol: 'ETH',
-  },
-]
+import { CMCCryptoCurrency } from '@/services/api/types'
+import { useLatestQuery } from '@/services/queries/useLatestQuery'
 
 type FavoriteItemKey = `${CMCCryptoCurrency['symbol']}:${CMCCryptoCurrency['id']}`
 
@@ -43,25 +21,36 @@ const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string
 
 const Home = () => {
   const renderItem = ({ item }: { item: CMCCryptoCurrency }) => {
-    return <Cell name={item.name} symbol={item.symbol} price={item.id} isFavorite={false} />
+    return (
+      <Cell
+        name={item.name}
+        symbol={item.symbol}
+        price={item.id}
+        isFavorite={FAVORITE_ITEMS.includes(`${item.symbol}:${item.id}`)}
+      />
+    )
   }
 
   const [isFavsSelected, setIsFavSelected] = useState(false)
   const [searchValue, setSearchValue] = useState('')
 
+  const { data: queryData, isLoading } = useLatestQuery()
+
   // TODO: Improve this logic and add debounce
   const data = useMemo(
     () =>
-      !isFavsSelected
+      !queryData
+        ? []
+        : !isFavsSelected
         ? !!searchValue
-          ? MOCKED_DATA.filter(item => searchMatch({ item, search: searchValue }))
-          : MOCKED_DATA
-        : MOCKED_DATA.filter(
+          ? queryData.filter(item => searchMatch({ item, search: searchValue }))
+          : queryData
+        : queryData.filter(
             item =>
               FAVORITE_ITEMS.includes(`${item.symbol}:${item.id}`) &&
               searchMatch({ item, search: searchValue })
           ),
-    [isFavsSelected, searchValue]
+    [isFavsSelected, searchValue, queryData]
   )
 
   return (
@@ -70,7 +59,7 @@ const Home = () => {
     >
       <Header userName='John Doe' />
 
-      <Spacer vertical='large' />
+      <Spacer vertical='xlarge' />
 
       <SearchBar placeholder='Search' onSearch={setSearchValue} value={searchValue} />
 
@@ -88,6 +77,18 @@ const Home = () => {
         data={data}
         renderItem={renderItem}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={() => (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {isLoading ? (
+              <ActivityIndicator color={colors.accentColor} size='large' />
+            ) : (
+              <Text variant='heading-regular' color='textSecondary'>
+                {isFavsSelected ? 'No favorites' : 'No data'}
+              </Text>
+            )}
+          </View>
+        )}
       />
 
       <Pressable style={{ alignItems: 'center' }}>
