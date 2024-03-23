@@ -1,18 +1,28 @@
 import React from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack'
 import Home from '@/screens/home/Home'
+import { CMCCryptoCurrency } from '@/services/api/types'
+import Details from '@/screens/details/Details'
 
 type RootStackParamList = {
   Home: undefined
-  Details: {}
+  Details: { id: CMCCryptoCurrency['id'] }
 }
+
+export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>
+export type DetailScreenProps = NativeStackScreenProps<RootStackParamList, 'Details'>
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 const RootStack = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name='Home' component={Home} options={{ headerShown: false }} />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name='Home' component={Home} />
+      <Stack.Screen
+        name='Details'
+        component={Details}
+        options={{ presentation: 'containedModal' }}
+      />
     </Stack.Navigator>
   )
 }

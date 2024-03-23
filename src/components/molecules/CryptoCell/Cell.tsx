@@ -1,25 +1,27 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import Text from '@/components/atoms/Text/Text'
 import { borderRadius, colors, shadows, spacing, useAppTheme } from '@/theme'
 
 type CryptoCellProps = {
   name: string
   symbol: string
-  price: number
+  price: string
   isFavorite: boolean
+  onPress?: () => void
 }
 
-const CryptoCell: React.FC<CryptoCellProps> = ({ name, symbol, price, isFavorite }) => {
+const CryptoCell: React.FC<CryptoCellProps> = ({ name, symbol, price, isFavorite, onPress }) => {
   const { colors } = useAppTheme()
 
   return (
-    <View
+    <Pressable
       style={[
         styles.container,
         { borderColor: isFavorite ? colors.accentColor : colors.cellColor },
         { ...shadows.base },
       ]}
+      onPress={onPress}
     >
       <View style={{ flex: 1 }}>
         <Text variant='label'>{name}</Text>
@@ -27,9 +29,9 @@ const CryptoCell: React.FC<CryptoCellProps> = ({ name, symbol, price, isFavorite
       </View>
 
       <View style={styles.priceText}>
-        <Text variant='label'>{price}</Text>
+        <Text variant='label'>{`$${price}`}</Text>
       </View>
-    </View>
+    </Pressable>
   )
 }
 

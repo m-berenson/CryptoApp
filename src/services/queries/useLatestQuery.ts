@@ -1,8 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchLatest } from '../api/endpoints'
 
-export const useLatestQuery = () => {
-  const { data, isLoading, error } = useQuery({ queryKey: ['latest'], queryFn: fetchLatest })
+const THIRTY_SECONDS_MS = 30 * 1000
 
-  return { data, isLoading, error }
+export const useLatestQuery = () => {
+  const result = useQuery({
+    queryKey: ['latest'],
+    queryFn: fetchLatest,
+
+    refetchInterval: THIRTY_SECONDS_MS,
+  })
+
+  return result
 }

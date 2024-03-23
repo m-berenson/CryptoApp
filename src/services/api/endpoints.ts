@@ -11,3 +11,13 @@ export const fetchLatest = async () => {
     },
   })
 }
+
+export const fetchQuote = async ({ id }: { id: CMCCryptoCurrency['id'] }) => {
+  return request<{ [key in CMCCryptoCurrency['id']]: CMCCryptoCurrency }>({
+    url: `${Config.COIN_MARKET_CAP_API_URL}/v2/cryptocurrency/quotes/latest?id=${id}&convert=USD`,
+    headers: {
+      'X-CMC_PRO_API_KEY': Config.COIN_MARKET_CAP_API_KEY,
+      Accept: 'application/json',
+    },
+  })
+}

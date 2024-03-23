@@ -10,6 +10,8 @@ import Spacer from '@/components/atoms/Spacer/Spacer'
 import Cell from '@/components/molecules/CryptoCell/Cell'
 import { CMCCryptoCurrency } from '@/services/api/types'
 import { useLatestQuery } from '@/services/queries/useLatestQuery'
+import { useNavigation } from '@react-navigation/native'
+import { HomeScreenProps } from '@/navigation/rootStack/RootStack'
 
 type FavoriteItemKey = `${CMCCryptoCurrency['symbol']}:${CMCCryptoCurrency['id']}`
 
@@ -19,14 +21,15 @@ const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string
   item.name.toLowerCase().includes(search.toLowerCase()) ||
   item.symbol.toLowerCase().includes(search.toLowerCase())
 
-const Home = () => {
+const Home = ({ navigation }: HomeScreenProps) => {
   const renderItem = ({ item }: { item: CMCCryptoCurrency }) => {
     return (
       <Cell
         name={item.name}
         symbol={item.symbol}
-        price={item.id}
+        price={item.quote.USD.price.toFixed(2)}
         isFavorite={FAVORITE_ITEMS.includes(`${item.symbol}:${item.id}`)}
+        onPress={() => navigation.navigate('Details', { id: item.id })}
       />
     )
   }
