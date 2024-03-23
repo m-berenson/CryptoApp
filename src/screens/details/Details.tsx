@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { type DetailScreenProps } from '@/navigation/rootStack/RootStack'
 import { Pressable, View } from 'react-native'
-import { useLatestQuery } from '@/services/queries/useLatestQuery'
 import Text from '@/components/atoms/Text/Text'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '@/theme'
 import { CMCCryptoCurrency } from '@/services/api/types'
 import { useQuoteQuery } from '@/services/queries/useQuoteQuery'
 import Spacer from '@/components/atoms/Spacer/Spacer'
+import { useIsFavorite, useUpdateFavorites } from '@/services/storage/useFavorites'
 
 const FIELDS_TO_SHOW: Array<keyof CMCCryptoCurrency> = ['name', 'symbol']
 
@@ -16,9 +16,21 @@ const QUOTE_FIELDS_TO_SHOW: Array<keyof CMCCryptoCurrency['quote']['USD']> = ['p
 const Details = ({ navigation, route }: DetailScreenProps) => {
   const { id } = route.params
 
-  const { data, isLoading, error } = useQuoteQuery({ id })
+  const { data } = useQuoteQuery({ id })
 
   const currentData = data && data[id]
+
+  const { update } = useUpdateFavorites()
+
+  const [isFavorite, setIsFavorite] = useState(useIsFavorite(id))
+
+  const handleAddToFavorites = () => {
+    setIsFavorite(prev => !prev)
+
+    if (currentData) {
+      update(currentData)
+    }
+  }
 
   return (
     <SafeAreaView
@@ -48,8 +60,13 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
 
       <Spacer vertical='xlarge' />
 
-      <Pressable style={{ backgroundColor: colors.backgroundSecondary }}>
-        <Text variant='button'>Add to favorites</Text>
+      <Pressable
+        style={{ backgroundColor: isFavorite ? colors.accentColor : colors.backgroundSecondary }}
+        onPress={handleAddToFavorites}
+      >
+        <Text variant='button' color={isFavorite ? 'darkGray' : 'textSecondary'}>
+          Add to favorites
+        </Text>
       </Pressable>
     </SafeAreaView>
   )

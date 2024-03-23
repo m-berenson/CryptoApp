@@ -8,7 +8,7 @@ export const useQuoteQuery = ({ id }: { id: CMCCryptoCurrency['id'] }) => {
   const result = useQuery({
     queryKey: ['quote', id],
     queryFn: () => fetchQuote({ id }),
-    refetchInterval: THIRTY_SECONDS_MS,
+    // refetchInterval: THIRTY_SECONDS_MS,
   })
 
   return result

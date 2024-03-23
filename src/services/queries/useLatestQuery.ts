@@ -8,7 +8,7 @@ export const useLatestQuery = () => {
     queryKey: ['latest'],
     queryFn: fetchLatest,
 
-    refetchInterval: THIRTY_SECONDS_MS,
+    // refetchInterval: THIRTY_SECONDS_MS,
   })
 
   return result

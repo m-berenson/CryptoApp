@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react'
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native'
+import React, { useCallback, useMemo, useState } from 'react'
+import { ActivityIndicator, FlatList, Pressable, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '@/theme/colors'
 import Text from '@/components/atoms/Text/Text'
@@ -10,29 +10,30 @@ import Spacer from '@/components/atoms/Spacer/Spacer'
 import Cell from '@/components/molecules/CryptoCell/Cell'
 import { CMCCryptoCurrency } from '@/services/api/types'
 import { useLatestQuery } from '@/services/queries/useLatestQuery'
-import { useNavigation } from '@react-navigation/native'
 import { HomeScreenProps } from '@/navigation/rootStack/RootStack'
-
-type FavoriteItemKey = `${CMCCryptoCurrency['symbol']}:${CMCCryptoCurrency['id']}`
-
-const FAVORITE_ITEMS: FavoriteItemKey[] = ['BTC:1']
+import { useFavorites } from '@/services/storage/useFavorites'
 
 const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string }) =>
   item.name.toLowerCase().includes(search.toLowerCase()) ||
   item.symbol.toLowerCase().includes(search.toLowerCase())
 
 const Home = ({ navigation }: HomeScreenProps) => {
-  const renderItem = ({ item }: { item: CMCCryptoCurrency }) => {
-    return (
-      <Cell
-        name={item.name}
-        symbol={item.symbol}
-        price={item.quote.USD.price.toFixed(2)}
-        isFavorite={FAVORITE_ITEMS.includes(`${item.symbol}:${item.id}`)}
-        onPress={() => navigation.navigate('Details', { id: item.id })}
-      />
-    )
-  }
+  const { favorites } = useFavorites()
+
+  const renderItem = useCallback(
+    ({ item }: { item: CMCCryptoCurrency & { isFavorite: boolean } }) => {
+      return (
+        <Cell
+          name={item.name}
+          symbol={item.symbol}
+          price={item.quote.USD.price.toFixed(2)}
+          isFavorite={item.isFavorite}
+          onPress={() => navigation.navigate('Details', { id: item.id })}
+        />
+      )
+    },
+    [favorites]
+  )
 
   const [isFavsSelected, setIsFavSelected] = useState(false)
   const [searchValue, setSearchValue] = useState('')
@@ -42,18 +43,17 @@ const Home = ({ navigation }: HomeScreenProps) => {
   // TODO: Improve this logic and add debounce
   const data = useMemo(
     () =>
-      !queryData
+      (!queryData
         ? []
         : !isFavsSelected
         ? !!searchValue
           ? queryData.filter(item => searchMatch({ item, search: searchValue }))
           : queryData
         : queryData.filter(
-            item =>
-              FAVORITE_ITEMS.includes(`${item.symbol}:${item.id}`) &&
-              searchMatch({ item, search: searchValue })
-          ),
-    [isFavsSelected, searchValue, queryData]
+            item => favorites.includes(item.id) && searchMatch({ item, search: searchValue })
+          )
+      ).map(item => ({ ...item, isFavorite: favorites.includes(item.id) })),
+    [isFavsSelected, searchValue, queryData, favorites]
   )
 
   return (
@@ -81,6 +81,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
         renderItem={renderItem}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         contentContainerStyle={{ flexGrow: 1 }}
+        keyExtractor={item => item.id.toString()}
         ListEmptyComponent={() => (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             {isLoading ? (
