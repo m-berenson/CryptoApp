@@ -9,9 +9,19 @@ type CryptoCellProps = {
   price: string
   isFavorite: boolean
   onPress?: () => void
+  big?: boolean
+  disabled?: boolean
 }
 
-const CryptoCell: React.FC<CryptoCellProps> = ({ name, symbol, price, isFavorite, onPress }) => {
+const CryptoCell: React.FC<CryptoCellProps> = ({
+  name,
+  symbol,
+  price,
+  isFavorite,
+  onPress,
+  big = false,
+  disabled = false,
+}) => {
   const { colors } = useAppTheme()
 
   return (
@@ -22,14 +32,15 @@ const CryptoCell: React.FC<CryptoCellProps> = ({ name, symbol, price, isFavorite
         { ...shadows.base },
       ]}
       onPress={onPress}
+      disabled={disabled}
     >
       <View style={{ flex: 1 }}>
-        <Text variant='label'>{name}</Text>
-        <Text variant='caption'>{symbol}</Text>
+        <Text variant={big ? 'subheading-regular' : 'label'}>{name}</Text>
+        <Text variant={big ? 'label' : 'caption'}>{symbol}</Text>
       </View>
 
-      <View style={styles.priceText}>
-        <Text variant='label'>{`$${price}`}</Text>
+      <View>
+        <Text variant={big ? 'subheading-regular' : 'label'}>{`$${price}`}</Text>
       </View>
     </Pressable>
   )
@@ -42,9 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.cellColor,
     borderRadius: borderRadius.medium,
     borderWidth: 0.5,
-  },
-  priceText: {
-    justifyContent: 'center',
+    alignItems: 'center',
   },
 })
 

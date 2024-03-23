@@ -60,7 +60,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
     <SafeAreaView
       style={{ backgroundColor: colors.backgroundPrimary, paddingHorizontal: 16, flex: 1 }}
     >
-      <Header userName='John Doe' />
+      <Header userName='User' />
 
       <Spacer vertical='xlarge' />
 
@@ -77,6 +77,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
       <Spacer vertical='medium' />
 
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={data}
         renderItem={renderItem}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}

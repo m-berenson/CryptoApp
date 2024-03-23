@@ -6,6 +6,9 @@ export const textVariants = {
     fontSize: 30,
     fontWeight: '500',
   },
+  'subheading-regular': {
+    fontSize: 20,
+  },
   body: {
     fontSize: 16,
   },

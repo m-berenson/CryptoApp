@@ -10,9 +10,10 @@ type PillProps = {
   isSelected: boolean
   onPress: () => void
   title: string
+  titleVariant?: 'label' | 'button'
 }
 
-const Pill: React.FC<PillProps> = ({ isSelected, title, onPress }) => {
+const Pill: React.FC<PillProps> = ({ isSelected, title, onPress, titleVariant = 'label' }) => {
   return (
     <Pressable
       style={[
@@ -24,7 +25,7 @@ const Pill: React.FC<PillProps> = ({ isSelected, title, onPress }) => {
       ]}
       onPress={onPress}
     >
-      <Text variant='label' color={isSelected ? 'darkGray' : 'textSecondary'}>
+      <Text variant={titleVariant} color={isSelected ? 'darkGray' : 'textSecondary'}>
         {title}
       </Text>
     </Pressable>

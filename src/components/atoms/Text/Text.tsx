@@ -7,15 +7,25 @@ type TextProps = {
   color?: ColorsKeys
 } & RNTextProps
 
-const Text: React.FC<TextProps> = ({ children, variant = 'body', color = 'textPrimary' }) => {
+const Text: React.FC<TextProps> = ({
+  children,
+  variant = 'body',
+  color = 'textPrimary',
+  style,
+  ...rest
+}) => {
   const { colors, textVariants } = useAppTheme()
 
   return (
     <RNText
-      style={{
-        ...textVariants[variant],
-        color: colors[color],
-      }}
+      style={[
+        {
+          ...textVariants[variant],
+          color: colors[color],
+        },
+        style,
+      ]}
+      {...rest}
     >
       {children}
     </RNText>
