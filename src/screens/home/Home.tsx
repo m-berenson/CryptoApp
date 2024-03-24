@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '@/theme/colors'
 import Text from '@/components/atoms/Text/Text'
 import Header from '@/components/molecules/Header/Header'
@@ -8,10 +7,12 @@ import SearchBar from '@/components/atoms/SearchBar/SearchBar'
 import Pill from '@/components/molecules/Pill/Pill'
 import Spacer from '@/components/atoms/Spacer/Spacer'
 import Cell from '@/components/molecules/CryptoCell/Cell'
-import { CMCCryptoCurrency } from '@/services/api/types'
+import type { CMCCryptoCurrency } from '@/services/api/types'
 import { useLatestQuery } from '@/services/queries/useLatestQuery'
-import { HomeScreenProps } from '@/navigation/rootStack/RootStack'
+import type { HomeScreenProps } from '@/navigation/rootStack/RootStack'
 import { useFavorites } from '@/services/storage/useFavorites'
+import Layout from '@/components/atoms/Layout/Layout'
+import { useAuthContext } from '@/services/auth/useAuthContext'
 
 const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string }) =>
   item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -19,6 +20,8 @@ const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string
 
 const Home = ({ navigation }: HomeScreenProps) => {
   const { favorites } = useFavorites()
+
+  const { signOut } = useAuthContext()
 
   const renderItem = useCallback(
     ({ item }: { item: CMCCryptoCurrency & { isFavorite: boolean } }) => {
@@ -32,7 +35,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
         />
       )
     },
-    [favorites]
+    [navigation]
   )
 
   const [isFavsSelected, setIsFavSelected] = useState(false)
@@ -46,7 +49,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
       (!queryData
         ? []
         : !isFavsSelected
-        ? !!searchValue
+        ? searchValue
           ? queryData.filter(item => searchMatch({ item, search: searchValue }))
           : queryData
         : queryData.filter(
@@ -57,9 +60,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
   )
 
   return (
-    <SafeAreaView
-      style={{ backgroundColor: colors.backgroundPrimary, paddingHorizontal: 16, flex: 1 }}
-    >
+    <Layout>
       <Header userName='User' />
 
       <Spacer vertical='xlarge' />
@@ -83,7 +84,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         contentContainerStyle={{ flexGrow: 1 }}
         keyExtractor={item => item.id.toString()}
-        ListEmptyComponent={() => (
+        ListEmptyComponent={
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             {isLoading ? (
               <ActivityIndicator color={colors.accentColor} size='large' />
@@ -93,15 +94,15 @@ const Home = ({ navigation }: HomeScreenProps) => {
               </Text>
             )}
           </View>
-        )}
+        }
       />
 
-      <Pressable style={{ alignItems: 'center' }}>
+      <Pressable style={{ alignItems: 'center' }} onPress={signOut}>
         <Text variant='button' color='accentColor'>
           Log out
         </Text>
       </Pressable>
-    </SafeAreaView>
+    </Layout>
   )
 }
 

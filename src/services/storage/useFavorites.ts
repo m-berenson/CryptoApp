@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { CMCCryptoCurrency } from '../api/types'
+import type { CMCCryptoCurrency } from '../api/types'
 import { getObject, onKeyChange, setItem } from './storage'
 
 export type FavoriteItemKey = CMCCryptoCurrency['id']
@@ -18,7 +18,7 @@ export const useFavorites = () => {
 
     updateFavorites()
 
-    const removeSubscription = onKeyChange(FAVORITE_KEY, updateFavorites)
+    const removeSubscription = onKeyChange(updateFavorites)
 
     return () => removeSubscription()
   }, [])

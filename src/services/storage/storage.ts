@@ -15,7 +15,7 @@ type SetParams<T extends StorageValue> = {
   value: T
 }
 
-const onKeyChange = (key: StorageKeys, callback: (changedKey?: string) => void) => {
+const onKeyChange = (callback: (changedKey?: string) => void) => {
   const listener = storage.addOnValueChangedListener(callback)
 
   return () => listener.remove()
@@ -52,4 +52,8 @@ const getObject = <T extends object>({ key }: GetParams) => {
   }
 }
 
-export { onKeyChange, setItem, getBoolean, getNumber, getString, getObject }
+const clearAll = () => {
+  storage.clearAll()
+}
+
+export { onKeyChange, setItem, getBoolean, getNumber, getString, getObject, clearAll }

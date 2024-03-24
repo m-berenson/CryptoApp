@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { type DetailScreenProps } from '@/navigation/rootStack/RootStack'
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, View } from 'react-native'
 import Text from '@/components/atoms/Text/Text'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { borderRadius, colors, spacing } from '@/theme'
-import { CMCCryptoCurrency } from '@/services/api/types'
+import type { CMCCryptoCurrency } from '@/services/api/types'
 import { useQuoteQuery } from '@/services/queries/useQuoteQuery'
 import Spacer from '@/components/atoms/Spacer/Spacer'
 import { useIsFavorite, useUpdateFavorites } from '@/services/storage/useFavorites'
 import Pill from '@/components/molecules/Pill/Pill'
 import CryptoCell from '@/components/molecules/CryptoCell/Cell'
+import Layout from '@/components/atoms/Layout/Layout'
 
 const FIELDS_TO_SHOW: Array<keyof CMCCryptoCurrency> = ['name', 'symbol', 'cmc_rank']
 
@@ -35,9 +35,7 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
   }
 
   return (
-    <SafeAreaView
-      style={{ backgroundColor: colors.backgroundPrimary, paddingHorizontal: 16, flex: 1 }}
-    >
+    <Layout>
       <Pressable onPress={navigation.goBack} style={{ alignItems: 'flex-end' }}>
         <Text variant='button'>Close</Text>
       </Pressable>
@@ -62,7 +60,7 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
           <Pill
             isSelected={isFavorite}
             onPress={handleAddToFavorites}
-            title={isFavorite ? `\u2605` : `\u2606`}
+            title={isFavorite ? '\u2605' : '\u2606'}
             titleVariant='button'
           />
           <Spacer vertical='large' />
@@ -110,7 +108,7 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
           </View>
         </ScrollView>
       )}
-    </SafeAreaView>
+    </Layout>
   )
 }
 
