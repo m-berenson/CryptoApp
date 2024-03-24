@@ -1,19 +1,22 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
-import Header from '@/components/molecules/Header/Header'
-import SearchBar from '@/components/atoms/SearchBar/SearchBar'
-import Pill from '@/components/molecules/Pill/Pill'
-import Spacer from '@/components/atoms/Spacer/Spacer'
-import Cell from '@/components/molecules/CryptoCell/Cell'
-import type { CMCCryptoCurrency } from '@/services/api/types'
-import { useLatestQuery } from '@/services/queries/useLatestQuery'
-import type { HomeScreenProps } from '@/navigation/rootStack/RootStack'
-import { useFavorites } from '@/services/storage/useFavorites'
-import Layout from '@/components/atoms/Layout/Layout'
-import { useAuthContext } from '@/services/auth/useAuthContext'
-import Button from '@/components/atoms/Button/Button'
-import ListEmptyComponent from './components/ListEmptyComponent'
+import { getUserName } from '@/utils/user'
 import { spacing } from '@/theme'
+import { strings } from '@/services/localization/strings'
+import { useAuthContext } from '@/services/auth/useAuthContext'
+import { useFavorites } from '@/services/storage/useFavorites'
+import { useLatestQuery } from '@/services/queries/useLatestQuery'
+import Button from '@/components/atoms/Button/Button'
+import Cell from '@/components/molecules/CryptoCell/Cell'
+import Header from '@/components/molecules/Header/Header'
+import Layout from '@/components/atoms/Layout/Layout'
+import ListEmptyComponent from './components/ListEmptyComponent'
+import Pill from '@/components/molecules/Pill/Pill'
+import SearchBar from '@/components/atoms/SearchBar/SearchBar'
+import Spacer from '@/components/atoms/Spacer/Spacer'
+import type { CMCCryptoCurrency } from '@/services/api/types'
+import type { HomeScreenProps } from '@/navigation/rootStack/RootStack'
+import { formatNumber } from '@/utils/format'
 
 const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string }) =>
   item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -30,7 +33,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
         <Cell
           name={item.name}
           symbol={item.symbol}
-          price={item.quote.USD.price.toFixed(2)}
+          price={formatNumber(item.quote.USD.price)}
           isFavorite={item.isFavorite}
           onPress={() => navigation.navigate('Details', { id: item.id })}
         />
@@ -62,17 +65,17 @@ const Home = ({ navigation }: HomeScreenProps) => {
 
   return (
     <Layout>
-      <Header userName={user?.user.name?.split(' ')[0] ?? ''} />
+      <Header userName={getUserName(user)} />
 
       <Spacer vertical='xlarge' />
 
-      <SearchBar placeholder='Search' onSearch={setSearchValue} value={searchValue} />
+      <SearchBar placeholder={strings.search} onSearch={setSearchValue} value={searchValue} />
 
       <Spacer vertical='large' />
 
       <Pill
         isSelected={isFavsSelected}
-        title='Favorites' // TODO: Replace with string
+        title={strings.favorites}
         onPress={() => setIsFavSelected(prev => !prev)}
       />
 
@@ -85,12 +88,14 @@ const Home = ({ navigation }: HomeScreenProps) => {
         ItemSeparatorComponent={Separator}
         contentContainerStyle={styles.flatlistContainer}
         keyExtractor={item => item.id.toString()}
-        ListEmptyComponent={<ListEmptyComponent isLoading={isLoading} message='No data found' />}
+        ListEmptyComponent={
+          <ListEmptyComponent isLoading={isLoading} message={strings.noDataFound} />
+        }
       />
 
       <Spacer vertical='large' />
 
-      <Button title='Sign out' onPress={signOut} />
+      <Button title={strings.signOut} onPress={signOut} />
     </Layout>
   )
 }

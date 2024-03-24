@@ -18,7 +18,11 @@ import CryptoCell from '@/components/molecules/CryptoCell/Cell'
 import Layout from '@/components/atoms/Layout/Layout'
 import DetailRow from '@/components/molecules/DetailRow/DetailRow'
 import Card from '@/components/atoms/Card/Card'
-import { useDetails } from './useFieldsToShow'
+import { useDetails } from './useDetails'
+import { strings } from '@/services/localization/strings'
+
+const FILLED_STAR = '\u2605'
+const EMPTY_STAR = '\u2606'
 
 const Details = ({ navigation, route }: DetailScreenProps) => {
   const { id } = route.params
@@ -44,7 +48,7 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
   return (
     <Layout>
       <Pressable onPress={navigation.goBack} style={styles.closeButton}>
-        <Text variant='button'>Close</Text>
+        <Text variant='button'>{strings.close}</Text>
       </Pressable>
 
       <Spacer vertical='xlarge' />
@@ -53,7 +57,9 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
         <View style={styles.loader}>
           <ActivityIndicator size='large' color={colors.accentColor} />
         </View>
-      ) : !currentItem ? null : (
+      ) : !currentItem ? (
+        <Text variant='subheading-regular'>{strings.error}</Text>
+      ) : (
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -67,7 +73,7 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
           <Pill
             isSelected={isFavorite}
             onPress={handleAddToFavorites}
-            title={isFavorite ? '\u2605' : '\u2606'}
+            title={isFavorite ? FILLED_STAR : EMPTY_STAR}
             titleVariant='button'
           />
           <Spacer vertical='large' />
@@ -83,7 +89,7 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
 
           <Spacer vertical='large' />
 
-          <Card title='Details'>
+          <Card title={strings.details}>
             {details.map((detail, index) => (
               <View key={detail.label}>
                 <DetailRow

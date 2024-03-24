@@ -7,7 +7,7 @@ import { useAuthContext } from '@/services/auth/useAuthContext'
 const AppNavigator = () => {
   const { user } = useAuthContext()
 
-  return <NavigationContainer>{!!user ? <RootStack /> : <AuthStack />}</NavigationContainer>
+  return <NavigationContainer>{user ? <RootStack /> : <AuthStack />}</NavigationContainer>
 }
 
 export default AppNavigator

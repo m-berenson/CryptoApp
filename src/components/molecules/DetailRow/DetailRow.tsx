@@ -1,4 +1,5 @@
 import Divider from '@/components/atoms/Divider/Divider'
+import Spacer from '@/components/atoms/Spacer/Spacer'
 import Text from '@/components/atoms/Text/Text'
 import { spacing } from '@/theme'
 import React from 'react'
@@ -14,9 +15,12 @@ const DetailRow = ({ label, value, divider }: DetailRowProps) => {
   return (
     <View>
       <View style={styles.container}>
-        <Text variant='label' color='textPrimary'>
+        <Text style={styles.label} variant='label' color='textPrimary'>
           {label}
         </Text>
+
+        <Spacer horizontal='small' />
+
         <Text variant='label' color='textSecondary'>
           {value ?? 'N/A'}
         </Text>
@@ -29,9 +33,12 @@ const DetailRow = ({ label, value, divider }: DetailRowProps) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: spacing.medium,
     paddingHorizontal: spacing.small,
+  },
+  label: {
+    flex: 1,
   },
 })
 

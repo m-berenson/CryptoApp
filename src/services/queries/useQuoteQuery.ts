@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchLatest, fetchQuote } from '../api/endpoints'
-import { CMCCryptoCurrency } from '../api/types'
+import { fetchQuote } from '../api/endpoints'
+import type { CMCCryptoCurrency } from '../api/types'
 
 const THIRTY_SECONDS_MS = 30 * 1000
 

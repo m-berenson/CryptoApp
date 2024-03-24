@@ -1,8 +1,11 @@
 import React from 'react'
-import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack'
-import Home from '@/screens/home/Home'
-import { CMCCryptoCurrency } from '@/services/api/types'
+import {
+  createNativeStackNavigator,
+  type NativeStackScreenProps,
+} from '@react-navigation/native-stack'
+import type { CMCCryptoCurrency } from '@/services/api/types'
 import Details from '@/screens/details/Details'
+import Home from '@/screens/home/Home'
 
 type RootStackParamList = {
   Home: undefined

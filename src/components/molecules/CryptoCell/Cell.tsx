@@ -38,7 +38,7 @@ const CryptoCell: React.FC<CryptoCellProps> = ({
       </View>
 
       <View>
-        <Text variant={big ? 'subheading-regular' : 'label'}>{`$${price}`}</Text>
+        <Text variant={big ? 'subheading-regular' : 'label'}>{`$${price} USD`}</Text>
       </View>
     </Pressable>
   )
