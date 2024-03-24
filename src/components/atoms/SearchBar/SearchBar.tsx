@@ -1,6 +1,8 @@
 import React from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { colors } from '@/theme/colors'
+import { borderRadius, spacing } from '@/theme'
+import { isAndroid } from '@/utils/platform'
 
 type SearchBarProps = {
   placeholder: string
@@ -25,10 +27,10 @@ const SearchBar = ({ placeholder, onSearch, value }: SearchBarProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
+    padding: isAndroid ? undefined : spacing.medium,
     flexDirection: 'row',
     backgroundColor: colors.backgroundSecondary,
-    borderRadius: 8,
+    borderRadius: borderRadius.medium,
   },
   input: {
     flex: 1,

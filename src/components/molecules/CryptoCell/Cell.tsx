@@ -1,7 +1,7 @@
 import React from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import Text from '@/components/atoms/Text/Text'
-import { borderRadius, colors, shadows, spacing, useAppTheme } from '@/theme'
+import { borderRadius, colors, shadows, spacing } from '@/theme'
 
 type CryptoCellProps = {
   name: string
@@ -22,8 +22,6 @@ const CryptoCell: React.FC<CryptoCellProps> = ({
   big = false,
   disabled = false,
 }) => {
-  const { colors } = useAppTheme()
-
   return (
     <Pressable
       style={[
@@ -34,7 +32,7 @@ const CryptoCell: React.FC<CryptoCellProps> = ({
       onPress={onPress}
       disabled={disabled}
     >
-      <View style={{ flex: 1 }}>
+      <View>
         <Text variant={big ? 'subheading-regular' : 'label'}>{name}</Text>
         <Text variant={big ? 'label' : 'caption'}>{symbol}</Text>
       </View>
@@ -54,6 +52,7 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.medium,
     borderWidth: 0.5,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
 })
 

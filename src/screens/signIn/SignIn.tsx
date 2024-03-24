@@ -1,26 +1,24 @@
+import Button from '@/components/atoms/Button/Button'
 import Layout from '@/components/atoms/Layout/Layout'
-import { SignInScreenProps } from '@/navigation/authStack/AuthStack'
+import Spacer from '@/components/atoms/Spacer/Spacer'
+import Text from '@/components/atoms/Text/Text'
 import { useAuthContext } from '@/services/auth/useAuthContext'
-import { colors } from '@/theme'
-import { GoogleSigninButton } from '@react-native-google-signin/google-signin'
 import React from 'react'
-import { ActivityIndicator } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
-const SignIn = ({ navigation }: SignInScreenProps) => {
+const SignIn = () => {
   const { signIn, isLoading } = useAuthContext()
 
   return (
     <Layout>
-      {isLoading ? (
-        <ActivityIndicator size='large' color={colors.accentColor} />
-      ) : (
-        <GoogleSigninButton
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={signIn}
-        />
-      )}
+      <Spacer vertical='large' />
+
+      <Text variant='heading-regular'>
+        ¡Bienvenido a <Text variant='heading-medium'>#CryptoApp</Text>!
+      </Text>
+
+      <Spacer vertical='large' />
+
+      <Button isLoading={isLoading} title='Sign in with Google' onPress={signIn} />
     </Layout>
   )
 }

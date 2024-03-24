@@ -1,6 +1,7 @@
 import React from 'react'
-import { ColorsKeys, TextVariantKeys, useAppTheme } from '@/theme'
-import { Text as RNText, TextProps as RNTextProps } from 'react-native'
+import { colors, textVariants, type ColorsKeys, type TextVariantKeys } from '@/theme'
+import type { TextProps as RNTextProps } from 'react-native'
+import { Text as RNText } from 'react-native'
 
 type TextProps = {
   variant?: TextVariantKeys
@@ -14,8 +15,6 @@ const Text: React.FC<TextProps> = ({
   style,
   ...rest
 }) => {
-  const { colors, textVariants } = useAppTheme()
-
   return (
     <RNText
       style={[

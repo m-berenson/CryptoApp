@@ -1,7 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import { ActivityIndicator, FlatList, Pressable, View } from 'react-native'
-import { colors } from '@/theme/colors'
-import Text from '@/components/atoms/Text/Text'
+import { FlatList, StyleSheet, View } from 'react-native'
 import Header from '@/components/molecules/Header/Header'
 import SearchBar from '@/components/atoms/SearchBar/SearchBar'
 import Pill from '@/components/molecules/Pill/Pill'
@@ -13,6 +11,9 @@ import type { HomeScreenProps } from '@/navigation/rootStack/RootStack'
 import { useFavorites } from '@/services/storage/useFavorites'
 import Layout from '@/components/atoms/Layout/Layout'
 import { useAuthContext } from '@/services/auth/useAuthContext'
+import Button from '@/components/atoms/Button/Button'
+import ListEmptyComponent from './components/ListEmptyComponent'
+import { spacing } from '@/theme'
 
 const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string }) =>
   item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -21,7 +22,7 @@ const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string
 const Home = ({ navigation }: HomeScreenProps) => {
   const { favorites } = useFavorites()
 
-  const { signOut } = useAuthContext()
+  const { signOut, user } = useAuthContext()
 
   const renderItem = useCallback(
     ({ item }: { item: CMCCryptoCurrency & { isFavorite: boolean } }) => {
@@ -61,7 +62,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
 
   return (
     <Layout>
-      <Header userName='User' />
+      <Header userName={user?.user.name?.split(' ')[0] ?? ''} />
 
       <Spacer vertical='xlarge' />
 
@@ -81,29 +82,28 @@ const Home = ({ navigation }: HomeScreenProps) => {
         showsVerticalScrollIndicator={false}
         data={data}
         renderItem={renderItem}
-        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
-        contentContainerStyle={{ flexGrow: 1 }}
+        ItemSeparatorComponent={Separator}
+        contentContainerStyle={styles.flatlistContainer}
         keyExtractor={item => item.id.toString()}
-        ListEmptyComponent={
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            {isLoading ? (
-              <ActivityIndicator color={colors.accentColor} size='large' />
-            ) : (
-              <Text variant='heading-regular' color='textSecondary'>
-                {isFavsSelected ? 'No favorites' : 'No data'}
-              </Text>
-            )}
-          </View>
-        }
+        ListEmptyComponent={<ListEmptyComponent isLoading={isLoading} message='No data found' />}
       />
 
-      <Pressable style={{ alignItems: 'center' }} onPress={signOut}>
-        <Text variant='button' color='accentColor'>
-          Log out
-        </Text>
-      </Pressable>
+      <Spacer vertical='large' />
+
+      <Button title='Sign out' onPress={signOut} />
     </Layout>
   )
 }
+
+const Separator = () => <View style={styles.separator} />
+
+const styles = StyleSheet.create({
+  flatlistContainer: {
+    flexGrow: 1,
+  },
+  separator: {
+    height: spacing.medium,
+  },
+})
 
 export default Home
