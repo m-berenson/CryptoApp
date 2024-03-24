@@ -1,19 +1,24 @@
 import React, { useState } from 'react'
 import { type DetailScreenProps } from '@/navigation/rootStack/RootStack'
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, View } from 'react-native'
+import {
+  ActivityIndicator,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native'
 import Text from '@/components/atoms/Text/Text'
-import { borderRadius, colors, spacing } from '@/theme'
-import type { CMCCryptoCurrency } from '@/services/api/types'
+import { colors } from '@/theme'
 import { useQuoteQuery } from '@/services/queries/useQuoteQuery'
 import Spacer from '@/components/atoms/Spacer/Spacer'
 import { useIsFavorite, useUpdateFavorites } from '@/services/storage/useFavorites'
 import Pill from '@/components/molecules/Pill/Pill'
 import CryptoCell from '@/components/molecules/CryptoCell/Cell'
 import Layout from '@/components/atoms/Layout/Layout'
-
-const FIELDS_TO_SHOW: Array<keyof CMCCryptoCurrency> = ['name', 'symbol', 'cmc_rank']
-
-const QUOTE_FIELDS_TO_SHOW: Array<keyof CMCCryptoCurrency['quote']['USD']> = ['price', 'volume_24h']
+import DetailRow from '@/components/molecules/DetailRow/DetailRow'
+import Card from '@/components/atoms/Card/Card'
+import { useDetails } from './useFieldsToShow'
 
 const Details = ({ navigation, route }: DetailScreenProps) => {
   const { id } = route.params
@@ -34,16 +39,18 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
     }
   }
 
+  const details = useDetails(currentItem)
+
   return (
     <Layout>
-      <Pressable onPress={navigation.goBack} style={{ alignItems: 'flex-end' }}>
+      <Pressable onPress={navigation.goBack} style={styles.closeButton}>
         <Text variant='button'>Close</Text>
       </Pressable>
 
       <Spacer vertical='xlarge' />
 
       {isLoading ? (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={styles.loader}>
           <ActivityIndicator size='large' color={colors.accentColor} />
         </View>
       ) : !currentItem ? null : (
@@ -76,64 +83,32 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
 
           <Spacer vertical='large' />
 
-          <View
-            style={{
-              padding: spacing.medium,
-              backgroundColor: colors.cellColor,
-              borderRadius: borderRadius.medium,
-
-              // alignItems: 'center',
-            }}
-          >
-            <Text variant='subheading-regular' color='textPrimary'>
-              Details
-            </Text>
-
-            <Spacer vertical='medium' />
-
-            {FIELDS_TO_SHOW.map((field, index) => (
-              <View key={field}>
-                <Row label={field} value={currentItem[field]?.toString()} />
-                {index < FIELDS_TO_SHOW.length - 1 && <Divider />}
+          <Card title='Details'>
+            {details.map((detail, index) => (
+              <View key={detail.label}>
+                <DetailRow
+                  label={detail.label}
+                  value={detail.value}
+                  divider={index < details.length - 1}
+                />
               </View>
             ))}
-            <Divider />
-
-            {QUOTE_FIELDS_TO_SHOW.map((field, index) => (
-              <View key={field}>
-                <Row label={field} value={currentItem.quote.USD[field]?.toString()} />
-                {index < QUOTE_FIELDS_TO_SHOW.length - 1 && <Divider />}
-              </View>
-            ))}
-          </View>
+          </Card>
         </ScrollView>
       )}
     </Layout>
   )
 }
 
-const Divider = () => {
-  return <View style={{ height: 1, backgroundColor: colors.darkGray }} />
-}
-
-const Row = ({ label, value }: { label: string; value?: string }) => {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingVertical: spacing.medium,
-        paddingHorizontal: spacing.small,
-      }}
-    >
-      <Text variant='label' color='textPrimary'>
-        {label}
-      </Text>
-      <Text variant='label' color='textSecondary'>
-        {value ?? 'N/A'}
-      </Text>
-    </View>
-  )
-}
+const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButton: {
+    alignItems: 'flex-end',
+  },
+})
 
 export default Details
