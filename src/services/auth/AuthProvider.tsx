@@ -29,26 +29,33 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  console.log(Config.GOOGLE_SIGN_IN_IOS_CLIENT_ID)
-
   useEffect(() => {
-    GoogleSignin.isSignedIn()
-      .then(isSignedIn => {
+    const checkIfSignedIn = async () => {
+      try {
+        const isSignedIn = await GoogleSignin.isSignedIn()
+
         if (isSignedIn) {
           GoogleSignin.getCurrentUser().then(userInfo => {
             setUser(userInfo)
           })
         }
-      })
-      .catch(error => {
+      } catch (error) {
         console.error(error)
-      })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkIfSignedIn()
   }, [])
 
   const signIn = useCallback(async () => {
     try {
       setIsLoading(true)
+
       const userInfo = await GoogleSignin.signIn()
+
+      setUser(userInfo)
 
       console.log(userInfo)
     } catch (error) {

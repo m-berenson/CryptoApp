@@ -75,9 +75,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.cryptoapp"
+    namespace "com.matias.berenson.cryptoapp"
     defaultConfig {
-        applicationId "com.cryptoapp"
+        applicationId "com.matias.berenson.cryptoapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

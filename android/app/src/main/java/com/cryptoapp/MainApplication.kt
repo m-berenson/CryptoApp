@@ -1,4 +1,4 @@
-package com.cryptoapp
+package com.matias.berenson.cryptoapp
 
 import android.app.Application
 import com.facebook.react.PackageList
