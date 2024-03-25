@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { GoogleSignin, type User } from '@react-native-google-signin/google-signin'
+import { GoogleSignin, statusCodes, type User } from '@react-native-google-signin/google-signin'
 import { createContext } from 'react'
 import { clearAll } from '../storage/storage'
 import Config from 'react-native-config'
 import { Alert } from 'react-native'
+import { strings } from '../localization/strings'
 
 type AuthContextType = {
   user: User | null
@@ -59,7 +60,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setUser(userInfo)
     } catch (error) {
-      Alert.alert('Error', 'There was an error signing in. Please try again.')
+      //@ts-ignore - We should use the correct type for error from GoogleSignin library
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        return
+      }
+
+      Alert.alert('Error', strings.error)
     } finally {
       setIsLoading(false)
     }
