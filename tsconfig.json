@@ -6,7 +6,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "types": ["react-native"],
+    "types": ["react-native", "jest"],
     "preserveConstEnums": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -14,6 +14,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+
+    "typeRoots": ["./types", "./node_modules/@types"]
   }
 }

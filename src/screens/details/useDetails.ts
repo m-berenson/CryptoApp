@@ -20,6 +20,15 @@ export const useDetails = (item?: CMCCryptoCurrency): DetailsReturnType[] =>
               value: item.quote ? `$${formatNumber(item.quote.USD.price)} USD` : undefined,
             },
             {
+              label: strings.detailsPriceChange24h,
+              value: item.quote ? `${formatNumber(item.quote.USD.percent_change_24h)}%` : undefined,
+            },
+
+            {
+              label: strings.detailsPriceChange7d,
+              value: item.quote ? `${formatNumber(item.quote.USD.percent_change_7d)}%` : undefined,
+            },
+            {
               label: strings.detailsVolume,
               value: item.quote ? `$${formatNumber(item.quote.USD.volume_24h)} USD` : undefined,
             },

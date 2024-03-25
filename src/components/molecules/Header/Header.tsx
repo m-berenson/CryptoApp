@@ -8,7 +8,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ userName }) => {
   return !userName ? (
-    <Text variant='heading-regular'>`${strings.headerMessage}!`</Text>
+    <Text variant='heading-regular'>{strings.headerMessage}!</Text>
   ) : (
     <Text variant='heading-regular'>
       {strings.headerMessage}, <Text variant='heading-medium'>{userName}</Text>!

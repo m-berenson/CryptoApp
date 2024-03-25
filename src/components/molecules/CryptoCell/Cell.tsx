@@ -31,6 +31,7 @@ const CryptoCell: React.FC<CryptoCellProps> = ({
       ]}
       onPress={onPress}
       disabled={disabled}
+      testID='crypto-cell-pressable'
     >
       <View>
         <Text variant={big ? 'subheading-regular' : 'label'}>{name}</Text>
