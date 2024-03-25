@@ -5,6 +5,7 @@ import Text from '@/components/atoms/Text/Text'
 import { useAuthContext } from '@/services/auth/useAuthContext'
 import { strings } from '@/services/localization/strings'
 import React from 'react'
+import { StyleSheet, View } from 'react-native'
 
 const SignIn = () => {
   const { signIn, isLoading } = useAuthContext()
@@ -13,15 +14,25 @@ const SignIn = () => {
     <Layout>
       <Spacer vertical='large' />
 
-      <Text variant='heading-regular'>
-        {strings.signInMessage} <Text variant='heading-medium'>{strings.cryptoApp}</Text>!
-      </Text>
+      <View style={styles.container}>
+        <Text variant='heading-large-regular'>{strings.signInMessage}</Text>
 
-      <Spacer vertical='large' />
+        <Text variant='heading-large-medium'>
+          {strings.cryptoApp}
+          <Text variant='heading-large-regular'>!</Text>
+        </Text>
 
-      <Button isLoading={isLoading} title={strings.googleSignIn} onPress={signIn} />
+        <Spacer vertical='xlarge' />
+        <Spacer vertical='xlarge' />
+
+        <Button isLoading={isLoading} title={strings.googleSignIn} onPress={signIn} />
+      </View>
     </Layout>
   )
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center' },
+})
 
 export default SignIn

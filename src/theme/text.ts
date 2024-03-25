@@ -1,4 +1,11 @@
 export const textVariants = {
+  'heading-large-regular': {
+    fontSize: 40,
+  },
+  'heading-large-medium': {
+    fontSize: 40,
+    fontWeight: '500',
+  },
   'heading-regular': {
     fontSize: 30,
   },
