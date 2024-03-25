@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
 import { getUserName } from '@/utils/user'
 import { spacing } from '@/theme'
@@ -17,10 +17,7 @@ import Spacer from '@/components/atoms/Spacer/Spacer'
 import type { CMCCryptoCurrency } from '@/services/api/types'
 import type { HomeScreenProps } from '@/navigation/rootStack/RootStack'
 import { formatNumber } from '@/utils/format'
-
-const searchMatch = ({ item, search }: { item: CMCCryptoCurrency; search: string }) =>
-  item.name.toLowerCase().includes(search.toLowerCase()) ||
-  item.symbol.toLowerCase().includes(search.toLowerCase())
+import { useHomeItems } from './hooks/useHomeItems'
 
 const Home = ({ navigation }: HomeScreenProps) => {
   const { favorites } = useFavorites()
@@ -47,21 +44,12 @@ const Home = ({ navigation }: HomeScreenProps) => {
 
   const { data: queryData, isLoading } = useLatestQuery()
 
-  // TODO: Improve this logic and add debounce
-  const data = useMemo(
-    () =>
-      (!queryData
-        ? []
-        : !isFavsSelected
-        ? searchValue
-          ? queryData.filter(item => searchMatch({ item, search: searchValue }))
-          : queryData
-        : queryData.filter(
-            item => favorites.includes(item.id) && searchMatch({ item, search: searchValue })
-          )
-      ).map(item => ({ ...item, isFavorite: favorites.includes(item.id) })),
-    [isFavsSelected, searchValue, queryData, favorites]
-  )
+  const { items } = useHomeItems({
+    queryData,
+    isFavsSelected,
+    searchValue,
+    favorites,
+  })
 
   return (
     <Layout>
@@ -83,7 +71,7 @@ const Home = ({ navigation }: HomeScreenProps) => {
 
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={data}
+        data={items}
         renderItem={renderItem}
         ItemSeparatorComponent={Separator}
         contentContainerStyle={styles.flatlistContainer}

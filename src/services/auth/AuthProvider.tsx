@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { GoogleSignin, statusCodes, type User } from '@react-native-google-signin/google-signin'
+import { GoogleSignin, type User } from '@react-native-google-signin/google-signin'
 import { createContext } from 'react'
 import { clearAll } from '../storage/storage'
 import Config from 'react-native-config'
+import { Alert } from 'react-native'
 
 type AuthContextType = {
   user: User | null
@@ -40,7 +41,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           })
         }
       } catch (error) {
-        console.error(error)
+        // eslint-disable-next-line no-console
+        console.error('Error checking if user is signed in', error)
       } finally {
         setIsLoading(false)
       }
@@ -56,19 +58,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const userInfo = await GoogleSignin.signIn()
 
       setUser(userInfo)
-
-      console.log(userInfo)
     } catch (error) {
-      console.log(error)
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation (e.g. sign in) is in progress already
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // play services not available or outdated
-      } else {
-        // some other error happened
-      }
+      Alert.alert('Error', 'There was an error signing in. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -83,7 +74,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // TODO: Improve this call to clear storage for each user
       clearAll()
     } catch (error) {
-      console.error(error)
+      // eslint-disable-next-line no-console
+      console.error('Error signing out', error)
     }
   }
 
