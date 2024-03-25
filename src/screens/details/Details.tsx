@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { type DetailScreenProps } from '@/navigation/rootStack/RootStack'
 import {
   ActivityIndicator,
@@ -21,6 +21,7 @@ import Layout from '@/components/atoms/Layout/Layout'
 import Pill from '@/components/molecules/Pill/Pill'
 import Spacer from '@/components/atoms/Spacer/Spacer'
 import Text from '@/components/atoms/Text/Text'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
 const FILLED_STAR = '\u2605'
 const EMPTY_STAR = '\u2606'
@@ -28,7 +29,9 @@ const EMPTY_STAR = '\u2606'
 const Details = ({ navigation, route }: DetailScreenProps) => {
   const { id } = route.params
 
-  const { data, isLoading, refetch, isRefetching } = useQuoteQuery({ id })
+  const { data, isLoading, refetch } = useQuoteQuery({ id })
+
+  const [isRefetching, setIsRefetching] = useState(false)
 
   const currentItem = data && data[id]
 
@@ -45,6 +48,11 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
   }
 
   const details = useDetails(currentItem)
+
+  const handleRefresh = useCallback(() => {
+    setIsRefetching(true)
+    refetch().finally(() => setIsRefetching(false))
+  }, [refetch])
 
   return (
     <Layout>
@@ -68,7 +76,7 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
             <RefreshControl
               tintColor={colors.accentColor}
               refreshing={isRefetching}
-              onRefresh={refetch}
+              onRefresh={handleRefresh}
             />
           }
           showsVerticalScrollIndicator={false}
@@ -94,13 +102,13 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
 
           <Card title={strings.details}>
             {details.map((detail, index) => (
-              <View key={detail.label}>
+              <Animated.View key={detail.label} entering={FadeInDown.delay(80 * index)}>
                 <DetailRow
                   label={detail.label}
                   value={detail.value}
                   divider={index < details.length - 1}
                 />
-              </View>
+              </Animated.View>
             ))}
           </Card>
         </ScrollView>

@@ -12,6 +12,7 @@
     - [🌍 Localization](#-localization)
     - [🔑 Google SignIn](#-google-signin)
     - [🧪 Testing](#-testing)
+    - [✨ Animations](#-animations)
 
 ## 📝 Description
 
@@ -71,3 +72,8 @@ _Note: To run the app you will need to have the .env files._
   - Jest is used to run the tests.
 - [React Native Testing Library](https://testing-library.com/docs/react-native-testing-library/intro/)
   - React Native Testing Library is used to test the components.
+
+### ✨ Animations
+
+- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)
+  - React Native Reanimated is used to animate the components in the app.

@@ -5,13 +5,13 @@ import { render } from '@testing-library/react-native'
 describe('Header - English', () => {
   it('should render the header without any name when user name is not defined', () => {
     const { getByText } = render(<Header />)
-    const element = getByText('👋 Hello!')
+    const element = getByText('👋 Hi!')
     expect(element).toBeTruthy()
   })
 
   it('should render the header with the user name when user name is defined', () => {
     const { getByText } = render(<Header userName='John' />)
-    const element = getByText('👋 Hello, John!')
+    const element = getByText('👋 Hi, John!')
     expect(element).toBeTruthy()
   })
 })

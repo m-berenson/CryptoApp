@@ -36,9 +36,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const isSignedIn = await GoogleSignin.isSignedIn()
 
         if (isSignedIn) {
-          GoogleSignin.getCurrentUser().then(userInfo => {
-            setUser(userInfo)
-          })
+          const userInfo = await GoogleSignin.signInSilently()
+
+          setUser(userInfo)
         }
       } catch (error) {
         // eslint-disable-next-line no-console
