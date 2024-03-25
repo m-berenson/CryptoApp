@@ -8,18 +8,19 @@ import {
   StyleSheet,
   View,
 } from 'react-native'
-import Text from '@/components/atoms/Text/Text'
 import { colors } from '@/theme'
-import { useQuoteQuery } from '@/services/queries/useQuoteQuery'
-import Spacer from '@/components/atoms/Spacer/Spacer'
-import { useIsFavorite, useUpdateFavorites } from '@/services/storage/useFavorites'
-import Pill from '@/components/molecules/Pill/Pill'
-import CryptoCell from '@/components/molecules/CryptoCell/Cell'
-import Layout from '@/components/atoms/Layout/Layout'
-import DetailRow from '@/components/molecules/DetailRow/DetailRow'
-import Card from '@/components/atoms/Card/Card'
-import { useDetails } from './useDetails'
+import { formatNumber } from '@/utils/format'
 import { strings } from '@/services/localization/strings'
+import { useDetails } from './useDetails'
+import { useIsFavorite, useUpdateFavorites } from '@/services/storage/useFavorites'
+import { useQuoteQuery } from '@/services/queries/useQuoteQuery'
+import Card from '@/components/atoms/Card/Card'
+import CryptoCell from '@/components/molecules/CryptoCell/Cell'
+import DetailRow from '@/components/molecules/DetailRow/DetailRow'
+import Layout from '@/components/atoms/Layout/Layout'
+import Pill from '@/components/molecules/Pill/Pill'
+import Spacer from '@/components/atoms/Spacer/Spacer'
+import Text from '@/components/atoms/Text/Text'
 
 const FILLED_STAR = '\u2605'
 const EMPTY_STAR = '\u2606'
@@ -54,11 +55,13 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
       <Spacer vertical='xlarge' />
 
       {isLoading ? (
-        <View style={styles.loader}>
+        <View style={styles.container}>
           <ActivityIndicator size='large' color={colors.accentColor} />
         </View>
       ) : !currentItem ? (
-        <Text variant='subheading-regular'>{strings.error}</Text>
+        <View style={styles.container}>
+          <Text variant='subheading-regular'>{strings.error}</Text>
+        </View>
       ) : (
         <ScrollView
           refreshControl={
@@ -81,7 +84,7 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
           <CryptoCell
             name={currentItem.name}
             symbol={currentItem.symbol}
-            price={currentItem.quote.USD.price.toFixed(2)}
+            price={formatNumber(currentItem.quote.USD.price)}
             isFavorite={isFavorite}
             big
             disabled
@@ -107,7 +110,7 @@ const Details = ({ navigation, route }: DetailScreenProps) => {
 }
 
 const styles = StyleSheet.create({
-  loader: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

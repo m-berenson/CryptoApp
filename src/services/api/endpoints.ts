@@ -10,7 +10,6 @@ const headers = {
 export const fetchLatest = async () => {
   return request<CMCCryptoCurrency[]>({
     url: `${Config.COIN_MARKET_CAP_API_URL}/v1/cryptocurrency/listings/latest?start=1&limit=60&convert=USD`,
-
     headers,
   })
 }
